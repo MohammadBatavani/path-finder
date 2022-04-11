@@ -1,0 +1,48 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>signUp-signIn</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body class="signUp-signIn">
+    <main class="main-container">
+        <div class="form-buttons">
+            <button class="sign-up btn">ثبت نام</button>
+            <button class="sign-in btn active">ورود</button>
+        </div>
+        <div class="forms-container">
+            <form method="POST" class="sign-in-form form">
+                {% csrf_token %}
+                <input type="tel" name="username" id="signIn-username" placeholder="نام کاربری">
+                <input type="password" name="password" id="signIn-password" placeholder="کلمه عبور">
+                <label for="signIn-remember-me" class="remember-me-label">
+                    من را به خاطر بسپار
+                    <input type="checkbox" name="" id="signIn-remember-me">
+                </label>
+                <button class="signIn-btn form-btn">ورود</button>
+            </form>
+            <form method="POST" class="sign-Up-form form">
+                {% csrf_token %}
+                <input type="tel" name="username" id="signUp-username" placeholder="نام کاربری">
+                <input type="text" name="firstname" id="signUp-username" placeholder="نام">
+                <input type="text" name="lastname" id="signUp-username" placeholder="نام خانوادگی">
+                <input type="email" name="email" id="signUp-username" placeholder="ایمیل">
+                <input type="password" name="password" id="signUp-password" placeholder="کلمه عبور">
+                <label for="signUp-remember-me" class="remember-me-label">
+                    من را به خاطر بسپار
+                    <input type="checkbox" name="" id="signUp-remember-me">
+                </label>
+                <button class="signUp-btn  form-btn">ثبت نام</button>
+            </form>
+            
+       
+        </div>
+    </main>
+
+    <script src="{% static 'signUp-signIn.js' %}"></script>
+</body>
+</html>

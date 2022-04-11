@@ -1,0 +1,44 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switch</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body class="signUp-signIn">
+    <main class="main-container2">
+        <div class="forms-container form ">
+            <label class="label-style">لطفا سامانه مورد نظر خود را انتخاب نمایید</label>
+            <div class="forms-container">
+                <div style="width: 100%;">
+                    <a href="{% url 'main_view' %}"><button class=" form-btn1"> سامانه مسیریابی   </button></a>
+                </div>
+            </div>
+            <div class="forms-container">
+                <div style="width: 100%;">
+                    <a href="#"><button class="form-btn1">سامانه توزیع جمعیت نیروها</button></a>
+                </div>
+            </div>
+            <div class="forms-container">
+                <div style="width: 100%;">
+                    <a href="#"><button class="form-btn1">سامانه تصمیم یار نظریه بازی ها</button></a>
+                </div>
+            </div>
+            <div class="forms-container">
+                <div style="width: 100%;">
+                    <a href="#"><button class="form-btn1">سامانه تصمیم یار فازی </button></a>
+                </div>
+            </div>
+            <div class="forms-container">
+                <div style="width: 100%;">
+                    <a href="#"><button class="form-btn1">سامانه متن کاوی</button></a>
+                </div>
+            </div>             
+            </div>            
+        </div>
+    </main>
+</body>

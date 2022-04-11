@@ -1,0 +1,195 @@
+{% load static %}
+<html lang="en" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frame-1</title>
+    <link rel="stylesheet" href="{% static 'style.css'%}" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+  <body class="frame-1">
+    <div class="container-frame-1">
+      <main>
+        <form
+          method="post"
+          action="calculate/"
+          class="map-form"
+          id="calculate_form"
+        >
+          {% csrf_token %}
+          <div id="calculate_options">
+            <div class="map-form-header">
+              <label for="algorithm-select">
+                الگوریتم
+                <select name="algorithm" id="algorithm-select">
+                {% for a in Algorithm %}
+                  <option value="{{ a.value }}">{{ a.name }}</option>
+                {% endfor %}
+                </select>
+              </label>
+              <label for="solider-type-select">
+                نوع سرباز
+                <select name="soldier-type" id="solider-type-select">
+                  <option value="سواره نظام">سواره نظام</option>
+                </select>
+              </label>
+              <label for="map_select">
+                نقشه
+                <select name="map" id="map_select">
+                  {% if not res %} {% for map in Map %}
+                  <option value="{{ map.pk }}">{{ map.name }}</option>
+                  {% endfor %} {% endif %}
+                </select>
+              </label>
+            </div>
+            </div>
+            <div id="response_detail" style="display: none;">
+              <div id="map-result-calculate" class="map-result-header">
+                <div>
+                  فاصله:
+                  <span id="map-distance-calculate">?</span>
+                  متر
+                </div>
+                <div>
+                  فاصله مسیر:
+                  <span id="map-path-distance-calculate">?</span>
+                  متر
+                </div>
+                <div>
+                  زمان مورد نیاز برای رسیدن به مقصد:
+                  <span id="map-time-calculate">?</span>
+                  دقیقه
+                </div>
+              </div>
+          </div>
+          <svg
+            id="map_svg"
+            width="1200"
+            height="900"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            loading="lazy"
+          >
+            <g id="map_path"></g>
+            <g id="map_container">
+              <image href="{% static 'Default_map.svg'%}" id="map_calculate" />
+            </g>
+          </svg>
+          <input type="hidden" name="start_x" id="start_x" />
+          <input type="hidden" name="start_y" id="start_y" />
+          <input type="hidden" name="destination_x" id="destination_x" />
+          <input type="hidden" name="destination_y" id="destination_y" />
+          <button id="calculate_btn">محاسبه</button>
+          <button id="recalculate_btn" hidden onClick="window.location.reload();">محاسبه مجدد</button>
+        </form>
+        <div action="" class="map-result" id="map-result">
+          <div id="map-result-text" class="map-result-header">
+            <div id="map-distance-text">
+              فاصله:
+              <span>20 متر</span>
+            </div>
+            <div id="map-path-distance-text">
+              فاصله مسیر:
+              <span>50 متر</span>
+            </div>
+            <div id="map-time-text">
+              زمان مورد نیاز برای رسیدن به مقصد:
+              <span>20 دقیقه</span>
+            </div>
+          </div>
+          <svg
+            id="map-result-svg"
+            src=""
+            width="1200"
+            height="900"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+          >
+            <image href="{% static 'Default_map.svg'%}" id="map_result" />
+          </svg>
+          <p>test</p>
+          <button type="button" class="new-calculate">محاسبه جدید</button>
+        </div>
+        <div class="modal-container"></div>
+        <div class="history-section">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>نقشه</th>
+                <th>نقطه شروع</th>
+                <th>نقطه مقصد</th>
+                <th>زمان رسیدن به مقصد</th>
+                <th>فاصله مسیر</th>
+                <th>فاصله نقاط</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for h in History %}
+              <tr href="{{ request.get_host }}/history/{{ h.id }}">
+                <td>{{ h.map.name }}</td>
+                <td>({{ h.start_point.y }} ,{{ h.start_point.x }})</td>
+                <td>
+                  ({{ h.destination_point.y }} ,{{ h.destination_point.x }})
+                </td>
+                <td>{{ h.res_time_of_arrival|floatformat:0 }}</td>
+                <td>{{ h.res_dir_distance|floatformat:0 }}</td>
+                <td>{{ h.res_2d_distance|floatformat:0 }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </main>
+      <aside>
+        <h4>{{ user.username }}</h4>
+        <div class="panel-item show-home">
+          <img
+            src="{% static 'icons/Home.svg'%}"
+            class="panel-icon"
+            alt="home-icon"
+          />
+          خانه
+        </div>
+        <div class="panel-item show-history">
+          <img
+            src="{% static 'icons/History.svg'%}"
+            class="panel-icon"
+            alt="history-icon"
+          />
+          تاریخچه
+        </div>
+        <div class="panel-item">
+          <img
+            src="{% static 'icons/exit.svg'%}"
+            class="panel-icon"
+            alt="return-icon"
+          />
+          <a href="signOut">خروج</a>
+        </div>
+      </aside>
+    </div>
+    <script>
+      {% if result %}
+          var result = true;
+          var map = {{map}};
+          var res_dir = {{res_dir}};
+          var res_dir_distance = {{res_dir_distance}};
+          var res_2d_distance = {{res_2d_distance}};
+          var res_time_of_arrival = {{res_time_of_arrival}};
+      {% else %}
+          var result = false;
+          var visual_map = {
+              {% for map in Map %}
+                  {{ map.pk }}: '{{ map.visual_map.url }}',
+              {% endfor %}
+          };
+      {% endif %}
+    </script>
+    <script src="{% static 'frames.js'%}"></script>
+    <script src="{% static 'panzoom.js'%}"></script>
+    <script src="{% static 'map.js'%}"></script>
+    <script src="{% static 'ajax.js'%}"></script>
+  </body>
+</html>
